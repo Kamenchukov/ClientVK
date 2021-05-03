@@ -11,6 +11,8 @@ import Foundation
 
 extension ViewController: WKNavigationDelegate {
    
+  
+    
     func webView(_ webView: WKWebView, decidePolicyFor nagigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
         guard let url = nagigationResponse.response.url, url.path == "/blank.html",
               let fragment = url.fragment

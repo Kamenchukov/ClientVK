@@ -7,16 +7,22 @@
 
 import Foundation
 
-struct User {
-    var name: String
-    var image: String?
-}
-extension User {
-    static var fake: [User] {
-        return [
-            User(name: "Kate", image: nil),
-            User(name: "Matt", image: nil)
-        ]
-            
-    }
-}
+struct Friends: Codable {
+     let response: FriendsResponce
+ }
+
+ struct FriendsResponce: Codable {
+     let count: Int
+     let items: [User]
+ }
+
+ struct User: Codable {
+     let firstName: String
+     let id: Int
+     let lastName: String
+     let photo100: URL
+     let trackCode: String
+     var name: String {
+         return firstName + " " + lastName
+     }
+ }

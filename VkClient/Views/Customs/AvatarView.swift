@@ -20,7 +20,16 @@ class AvatarView: UIView {
         }
     }
     private var imageView : UIImageView?
-    
+    open var imageName: URL? {
+        didSet {
+            if let image = imageName,
+               let data = try? Data(contentsOf: image) {
+                imageView?.image = UIImage(data: data)
+            } else {
+                imageView?.image = UIImage(systemName: "person.corp.circle")
+            }
+        }
+    }
     @IBInspectable
     var shadowOpacity : Float = 0.7 {
         didSet {

@@ -26,6 +26,7 @@
 		E15D98B225DC3F890070CF03 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E15D98B025DC3F890070CF03 /* Main.storyboard */; };
 		E15D98B425DC3F8A0070CF03 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E15D98B325DC3F8A0070CF03 /* Assets.xcassets */; };
 		E15D98B725DC3F8A0070CF03 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E15D98B525DC3F8A0070CF03 /* LaunchScreen.storyboard */; };
+		E185BB85263898C30052D82B /* UserPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = E185BB84263898C30052D82B /* UserPhoto.swift */; };
 		E1B0EC0A2610AEB60043BA77 /* NewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B0EC092610AEB60043BA77 /* NewsViewController.swift */; };
 		E1B0EC0E2610B08C0043BA77 /* NewsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B0EC0C2610B08C0043BA77 /* NewsCell.swift */; };
 		E1B0EC0F2610B08C0043BA77 /* NewsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1B0EC0D2610B08C0043BA77 /* NewsCell.xib */; };
@@ -77,6 +78,7 @@
 		E15D98B325DC3F8A0070CF03 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E15D98B625DC3F8A0070CF03 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E15D98B825DC3F8A0070CF03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E185BB84263898C30052D82B /* UserPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPhoto.swift; sourceTree = "<group>"; };
 		E1B0EC092610AEB60043BA77 /* NewsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsViewController.swift; sourceTree = "<group>"; };
 		E1B0EC0C2610B08C0043BA77 /* NewsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsCell.swift; sourceTree = "<group>"; };
 		E1B0EC0D2610B08C0043BA77 /* NewsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewsCell.xib; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 				E1427D2625F0061A00698EAE /* User.swift */,
 				E1427D2A25F0069000698EAE /* Communities.swift */,
 				E1B0EC112610C98E0043BA77 /* News.swift */,
+				E185BB84263898C30052D82B /* UserPhoto.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -390,6 +393,7 @@
 				E1F77F4D262B40AD004E2699 /* WKViewControllerExtansion.swift in Sources */,
 				E1B0EC122610C98E0043BA77 /* News.swift in Sources */,
 				E15D98AD25DC3F890070CF03 /* SceneDelegate.swift in Sources */,
+				E185BB85263898C30052D82B /* UserPhoto.swift in Sources */,
 				E1E97FFF260288EB0053ACC0 /* LikeControl.swift in Sources */,
 				E14003D925F620010074F8D1 /* AllCommunityCell.swift in Sources */,
 				E1B1FD3826373DE80070E59D /* VKServices.swift in Sources */,
