@@ -34,6 +34,10 @@ class UserPhotos: Decodable {
     @objc dynamic var width: String?
     @objc dynamic var likes: PhotoLikes?
     @objc dynamic var reposts: PhotoReposts?
+    
+    override static func primaryKey() -> String? {
+        return "id"
+    }
  }
 
  class PhotoLikes: Object, Codable {

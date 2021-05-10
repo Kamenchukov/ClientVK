@@ -29,4 +29,8 @@ struct Groups: Decodable {
     @objc dynamic var photo50: String?
     @objc dynamic var photo100: String?
     @objc dynamic var photo200: String?
+    
+    override static func primaryKey() -> String? {
+        return "id"
+    }
  }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class CommunitiesViewController: UITableViewController {
    // @IBOutlet weak var communityName: UILabel!
@@ -17,8 +18,8 @@ class CommunitiesViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        vkServices.loadCommunities() {[weak self] groups in
-            self?.myGroups = groups
+        vkServices.loadCommunities() {[weak self] in
+            self?.loadData()
             self?.tableView.reloadData()
         }
         
@@ -29,8 +30,8 @@ class CommunitiesViewController: UITableViewController {
             let controller = sender.source as? AllCommunitiesViewController,
             let indexPath = controller.tableView.indexPathForSelectedRow
        else {return}
-        vkServices.loadCommunities() {[weak self] groups in
-            self?.myGroups = groups
+        vkServices.loadCommunities() {[weak self] in
+            self?.loadData()
             self?.tableView.reloadData()
         }
         //let selectedCommunity  = controller.allCommunity[indexPath.row]
@@ -82,4 +83,16 @@ class CommunitiesViewController: UITableViewController {
   
 
 
+}
+
+extension CommunitiesViewController {
+    func loadData() {
+        do {
+            let realm = try Realm()
+            let groups = realm.objects(Group.self)
+            self.myGroups = Array(groups)
+        } catch {
+            print(error)
+        }
+    }
 }

@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import RealmSwift
 
 class FriendFotoViewController: UICollectionViewController {
 
@@ -17,12 +17,14 @@ class FriendFotoViewController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadData()
+        collectionView.reloadData()
+        vkServices.loadPhotos(friendId: userId!) {
+            [weak self] in
+            self?.loadData()
+            self?.collectionView.reloadData()
+        }
 
-
-        vkServices.loadPhotos(friendId: userId!) {[weak self] photos in
-                     self?.photos = photos
-                     self?.collectionView.reloadData()
-                 }
     }
 
     
@@ -36,10 +38,12 @@ class FriendFotoViewController: UICollectionViewController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FotoCell" , for: indexPath) as! FotoCell
         
         if let image = photos[indexPath.item].photo604 {
-                    let data = try? Data(contentsOf: image)
+                    let imageURL = URL(string: image)!
+                    let data = try? Data(contentsOf: imageURL)
                     cell.foto.image = UIImage(data: data!)
                 } else if let image = photos[indexPath.item].photo130 {
-                    let data = try? Data(contentsOf: image)
+                    let imageURL = URL(string: image)!
+                    let data = try? Data(contentsOf: imageURL)
                     cell.foto.image = UIImage(data: data!)
                 } else {
                     cell.foto.image = UIImage(systemName: "person.crop.circle")
@@ -52,4 +56,16 @@ class FriendFotoViewController: UICollectionViewController {
     }
 
    
+}
+
+extension FriendFotoViewController {
+    func loadData() {
+        do {
+            let realm = try Realm()
+            let photos = realm.objects(UserPhoto.self).filter("ownerId = \(Int(userId!))")
+            self.photos = Array(photos)
+        } catch {
+            print(error)
+        }
+    }
 }

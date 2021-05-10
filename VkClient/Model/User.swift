@@ -26,4 +26,8 @@ class Friends: Decodable {
     @objc dynamic var name: String {
          return firstName + " " + lastName
      }
+    
+    override static func primaryKey() -> String? {
+        return "id"
+    }
  }

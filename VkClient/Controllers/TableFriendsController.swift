@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class TableFriendsController: UITableViewController, UISearchBarDelegate {
        // @IBOutlet weak var tableView: UITableView!
@@ -21,9 +22,10 @@ class TableFriendsController: UITableViewController, UISearchBarDelegate {
         super.viewDidLoad()
         //setupDataSource()
        // loadFriends()
-        vkServices.loadFriends(){[weak self] users in
-            self?.users = users
+        loadData()
+        vkServices.loadFriends() {[weak self] in
             
+            self?.loadData()
         
             
             self?.firstSymbols = (self?.createFirstSimbols())!
@@ -167,6 +169,20 @@ extension TableFriendsController {
         
         return newUsers
     }
-
-   
 }
+
+   //MARK: RealmData
+    
+    extension TableFriendsController {
+       
+        func loadData() {
+            do {
+                let realm = try Realm()
+                let users = realm.objects(User.self)
+                self.users = Array(users)
+            } catch {
+                print(error)
+            }
+        }
+    }
+
