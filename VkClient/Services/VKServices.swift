@@ -8,6 +8,7 @@
 import Foundation
 import Alamofire
 import WebKit
+import RealmSwift
 
 open class VKServices {
      let baseURL = "https://api.vk.com/method/"
@@ -39,7 +40,27 @@ open class VKServices {
                              }
                          }
              }
-     
+    func saveFriendsData(_ friends: [User]) {
+        do {
+            let realm = try Realm()
+            realm.beginWrite()
+            realm.add(friends)
+            try realm.commitWrite()
+        } catch {
+            print(error)
+        }
+    }
+    
+    func saveCommunitiesData(_ groups: [Group]) {
+        do {
+            let realm = try Realm()
+            realm.beginWrite()
+            realm.add(groups)
+            try realm.commitWrite()
+        } catch {
+            print(error)
+        }
+    }
 
      func loadCommunities(completion: @escaping ([Group]) -> Void) {
          let path = "groups.get"
@@ -119,5 +140,14 @@ open class VKServices {
                          }
          }
      }
-
+    func savePhotosData(_ photos:[UserPhoto]) {
+        do {
+            let realm = try Realm()
+            realm.beginWrite()
+            realm.add(photos)
+            try realm.commitWrite()
+        } catch {
+            print(error)
+        }
+    }
 }

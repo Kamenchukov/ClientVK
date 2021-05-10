@@ -29,54 +29,7 @@ class AllCommunitiesViewController: UITableViewController, UISearchBarDelegate {
         }
     }
     
-//    var filteredCommunity: [CommunitiesOfUser] = []
-//    var sections: [String] = []
-//    var cachedSectionItems: [String: [CommunitiesOfUser]] = [:]
-    
-//    private func loadCommunities() {
-//        allCommunity = allCommunity.sorted(by: {
-//            $0.nameOfCommunity.lowercased() < $1.nameOfCommunity.lowercased()
-//        })
-//    }
-//    private func filterCommunities(text: String?) {
-//        guard  let text = text, !text.isEmpty else {
-//            filteredCommunity = allCommunity
-//            return
-//        }
-//        filteredCommunity = allCommunity.filter {
-//            $0.nameOfCommunity.lowercased().contains(text.lowercased())
-//        }
-//    }
-    
-//    private func setupDataSource() {
-//
-//
-//        // 1 filter friends
-//        filterCommunities(text: searchBar.text)
-//
-//        // 2 create sections of first letters
-//        let firstLetters = filteredCommunity.map{
-//            String($0.nameOfCommunity.uppercased().prefix(1))
-//
-//        }
-//        sections = Array(Set(firstLetters)).sorted()
-//
-//        // 3 create cached items for sections
-//        cachedSectionItems = [:]
-//        for section in sections {
-//            cachedSectionItems[section] = filteredCommunity.filter {
-//                $0.nameOfCommunity.uppercased().prefix(1) == section
-//            }
-//
-//        }
-//
-//
-//    }
-    
-//    private func getCommunity(for indexPath: IndexPath) -> CommunitiesOfUser {
-//        let sectionLetter = sections[indexPath.section]
-//        return cachedSectionItems[sectionLetter]![indexPath.row]
-//    }
+
 
 
     // MARK: - Table view data source
@@ -118,6 +71,7 @@ class AllCommunitiesViewController: UITableViewController, UISearchBarDelegate {
 //        }
         cell.textLabel?.text = allGroups[indexPath.item].name
         //cell.picOfCommunity.image = allGroups[indexPath.row].photo100
+        //let photoUrl = URL(string: allGroups[indexPath.item].photo100 ?? "")
         
         return cell
     }

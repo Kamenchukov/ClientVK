@@ -6,6 +6,8 @@ target 'VkClient' do
   use_frameworks!
 
   pod 'Alamofire'
+
+  pod 'RealmSwift'
   # Pods for VkClient
 
 end

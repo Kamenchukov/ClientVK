@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import RealmSwift
+
 struct News {
     var name: String
     var pic: String?
