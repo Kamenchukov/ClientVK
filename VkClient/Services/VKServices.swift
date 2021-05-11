@@ -17,7 +17,7 @@ open class VKServices {
 
     let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
     
-    func loadFriends(completion: @escaping () -> Void) {
+    func loadFriends() {
          let path = "friends.get"
 
          let parameters: Parameters = [
@@ -36,7 +36,7 @@ open class VKServices {
                                  let decoder = JSONDecoder()
                                  decoder.keyDecodingStrategy = .convertFromSnakeCase
                                  let users = try decoder.decode(Friends.self, from: data)
-                                 completion()
+                                self.saveFriendsData(users.response.items)
                              } catch {
                                  print(error)
                              }
@@ -64,7 +64,7 @@ open class VKServices {
         }
     }
 
-     func loadCommunities(completion: @escaping () -> Void) {
+     func loadCommunities() {
          let path = "groups.get"
 
          let parameters: Parameters = [
@@ -83,7 +83,7 @@ open class VKServices {
                              let decoder = JSONDecoder()
                              decoder.keyDecodingStrategy = .convertFromSnakeCase
                             let groups = try decoder.decode(Groups.self, from: data as! Data)
-                             completion()
+                            self.saveCommunitiesData(groups.response.items)
                          } catch {
                              print(error)
                          }
@@ -116,7 +116,7 @@ open class VKServices {
          }
      }
 
-    func loadPhotos(friendId: Int = Session.shared.userId, completion: @escaping () -> Void) {
+    func loadPhotos(friendId: Int = Session.shared.userId!) {
          let path = "photos.getAll"
          print(friendId)
         
@@ -137,7 +137,7 @@ open class VKServices {
                              let decoder = JSONDecoder()
                              decoder.keyDecodingStrategy = .convertFromSnakeCase
                              let photos = try decoder.decode(UserPhotos.self, from: data)
-                             completion()
+                            self.savePhotosData(photos.response.items)
                          } catch {
                              print(error)
                          }

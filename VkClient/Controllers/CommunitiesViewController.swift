@@ -12,35 +12,26 @@ class CommunitiesViewController: UITableViewController {
    // @IBOutlet weak var communityName: UILabel!
     
     //var allCommunity: [CommunitiesOfUser] = []
+    var myGroups: Results<Group>?
     var vkServices = VKServices()
-    var myGroups = [Group]()
+    var token: NotificationToken?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        vkServices.loadCommunities() {[weak self] in
-            self?.loadData()
-            self?.tableView.reloadData()
-        }
+        vkServices.loadCommunities()
+        realmObserve()
         
     }
     //MARK: - Seques
-    @IBAction func unwindFromAllCommunities(_ sender: UIStoryboardSegue) {
-       guard
-            let controller = sender.source as? AllCommunitiesViewController,
-            let indexPath = controller.tableView.indexPathForSelectedRow
-       else {return}
-        vkServices.loadCommunities() {[weak self] in
-            self?.loadData()
-            self?.tableView.reloadData()
-        }
-        //let selectedCommunity  = controller.allCommunity[indexPath.row]
+    @IBAction func unwindFromAllCommunities(_ segue: UIStoryboardSegue) {
         
-   
-//       if !myGroups.contains(selectedCommunity) {
-//
-//        myGroups.append(selectedCommunity)
-//        tableView.reloadData()
+        guard let allCommunitiesContainer = segue.source as? AllCommunitiesViewController,
+                       let _ = allCommunitiesContainer.tableView.indexPathForSelectedRow
+                 else { return }
+
+                 vkServices.loadCommunities()
+        
                 
            }
 
@@ -55,44 +46,58 @@ class CommunitiesViewController: UITableViewController {
 
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return myGroups.count
+
+        return myGroups?.count ?? 0
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "communityCell", for: indexPath) as! AllCommunityCell
-        cell.allCommunityCell.text = myGroups[indexPath.item].name
-        //cell.picOfCommunity.image = myGroups[indexPath.item].photo100
-       
-//        if let image = communities.imageofCommunity {
-//            cell.picOfCommunity.image = UIImage(named: image)
-//        } else {
-//            cell.picOfCommunity.image = UIImage(systemName: "person")
-//        }
+        cell.allCommunityCell.text = myGroups?[indexPath.item].name
+
+        
         
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            myGroups.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-        }
-    }
   
 
 
 }
 
 extension CommunitiesViewController {
-    func loadData() {
-        do {
-            let realm = try Realm()
-            let groups = realm.objects(Group.self)
-            self.myGroups = Array(groups)
-        } catch {
-            print(error)
-        }
-    }
+//    func loadData() {
+//        do {
+//            let realm = try Realm()
+//            let groups = realm.objects(Group.self)
+//            self.myGroups = Array(groups)
+//        } catch {
+//            print(error)
+//        }
+//    }
+    func realmObserve() {
+             guard let realm = try? Realm() else { return }
+             myGroups = realm.objects(Group.self)
+
+             token = myGroups?.observe { [weak self] (changes: RealmCollectionChange) in
+                 guard let self = self,
+                       let tableView = self.tableView else { return }
+
+                 switch changes {
+                     case .initial:
+                         tableView.reloadData()
+                     case .update(_, let deletions, let insertions, let modifications):
+                         tableView.beginUpdates()
+                         tableView.insertRows(at: insertions.map({ IndexPath(row: $0, section: 0) }),
+                                              with: .automatic)
+                         tableView.deleteRows(at: deletions.map({ IndexPath(row: $0, section: 0)}),
+                                              with: .automatic)
+                         tableView.reloadRows(at: modifications.map({ IndexPath(row: $0, section: 0) }),
+                                              with: .automatic)
+                         tableView.endUpdates()
+                     case .error(let error):
+                         fatalError("\(error)")
+                 }
+             }
+         }
 }

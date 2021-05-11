@@ -40,11 +40,11 @@ class UserPhotos: Decodable {
     }
  }
 
- class PhotoLikes: Object, Codable {
+ class PhotoLikes: Object, Decodable {
     @objc dynamic var userLikes: Int = 0
     @objc dynamic var count: Int = 0
  }
 
- class PhotoReposts: Object, Codable {
+ class PhotoReposts: Object, Decodable {
     @objc dynamic var count: Int = 0
  }

@@ -13,17 +13,15 @@ class FriendFotoViewController: UICollectionViewController {
     
     var vkServices = VKServices()
     var userId: Int?
-    var photos = [UserPhoto]()
+    var photos: Results<UserPhoto>?
+    var token: NotificationToken?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadData()
-        collectionView.reloadData()
-        vkServices.loadPhotos(friendId: userId!) {
-            [weak self] in
-            self?.loadData()
-            self?.collectionView.reloadData()
-        }
+        
+        vkServices.loadPhotos(friendId: userId ?? 0)
+        realmObserve()
 
     }
 
@@ -31,23 +29,35 @@ class FriendFotoViewController: UICollectionViewController {
 
     // MARK: UICollectionViewDataSource
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.count
+        return photos?.count ?? 0
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FotoCell" , for: indexPath) as! FotoCell
         
-        if let image = photos[indexPath.item].photo604 {
-                    let imageURL = URL(string: image)!
-                    let data = try? Data(contentsOf: imageURL)
+//        if let image = photos[indexPath.item].photo604 {
+//                    let imageURL = URL(string: image)!
+//                    let data = try? Data(contentsOf: imageURL)
+//                    cell.foto.image = UIImage(data: data!)
+//                } else if let image = photos[indexPath.item].photo130 {
+//                    let imageURL = URL(string: image)!
+//                    let data = try? Data(contentsOf: imageURL)
+//                    cell.foto.image = UIImage(data: data!)
+//                } else {
+//                    cell.foto.image = UIImage(systemName: "person.crop.circle")
+//                         }
+        guard let photo = photos?[indexPath.item] else { return cell}
+        if let image = photo.photo604 {
+                     let imageURL = URL(string: image)!
+                     let data = try? Data(contentsOf: imageURL)
                     cell.foto.image = UIImage(data: data!)
-                } else if let image = photos[indexPath.item].photo130 {
-                    let imageURL = URL(string: image)!
-                    let data = try? Data(contentsOf: imageURL)
+                 } else if let image = photo.photo130 {
+                     let imageURL = URL(string: image)!
+                     let data = try? Data(contentsOf: imageURL)
                     cell.foto.image = UIImage(data: data!)
-                } else {
+                 } else {
                     cell.foto.image = UIImage(systemName: "person.crop.circle")
-                         }
+                 }
 //        cell.likes.numberOfLikes = photos[indexPath.item].likes.count
 //        cell.likes.isLiked = (photos[indexPath.item].likes.userLikes != 0)
       
@@ -59,13 +69,29 @@ class FriendFotoViewController: UICollectionViewController {
 }
 
 extension FriendFotoViewController {
-    func loadData() {
-        do {
-            let realm = try Realm()
-            let photos = realm.objects(UserPhoto.self).filter("ownerId = \(Int(userId!))")
-            self.photos = Array(photos)
-        } catch {
-            print(error)
-        }
-    }
+    func realmObserve() {
+             guard let realm = try? Realm() else { return }
+
+             photos = realm.objects(UserPhoto.self).filter("ownerId = \(Int(userId!))")
+             token = photos?.observe {[weak self] (changes: RealmCollectionChange) in
+
+                 guard let self = self,
+                       let collectionView = self.collectionView else { return }
+
+                 switch changes {
+                     case .initial:
+                         collectionView.reloadData()
+                     case .update(_, let deletions, let insertions, let modifications):
+                         collectionView.performBatchUpdates({
+                             collectionView.insertItems(at: insertions.map({ IndexPath(row: $0, section: 0) }))
+                             collectionView.deleteItems(at: deletions.map({ IndexPath(row: $0, section: 0)}))
+                             collectionView.reloadItems(at: modifications.map({ IndexPath(row: $0, section: 0) }))
+                         }, completion: nil)
+                     case .error(let error):
+                         fatalError("\(error)")
+                 }
+
+             }
+
+         }
 }

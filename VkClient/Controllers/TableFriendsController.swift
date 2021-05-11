@@ -16,22 +16,14 @@ class TableFriendsController: UITableViewController, UISearchBarDelegate {
     var users = [User]()
     var firstSymbols: [Character] = []
     var sortFriends: [Character: [User]] = [:]
+    var token: NotificationToken?
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        //setupDataSource()
-       // loadFriends()
-        loadData()
-        vkServices.loadFriends() {[weak self] in
-            
-            self?.loadData()
-        
-            
-            self?.firstSymbols = (self?.createFirstSimbols())!
-            self?.sortFriends = (self?.sortUsers())!
-            self?.tableView.reloadData()
-        }
+      
+        vkServices.loadFriends()
+        observeRealm()
     }
     // MARK: - Data source
 //    var friends = [User(name: "Kate", image: "kate"),
@@ -129,6 +121,8 @@ class TableFriendsController: UITableViewController, UISearchBarDelegate {
 //            cell.friendFoto.image = UIImage(systemName: "person")
 //        }
         if let photo = friend?.photo100 {
+            _ = URL(string: photo)
+            
             //cell.friendFoto.image = photo
         }
             
@@ -175,14 +169,27 @@ extension TableFriendsController {
     
     extension TableFriendsController {
        
-        func loadData() {
+        func observeRealm() {
             do {
                 let realm = try Realm()
-                let users = realm.objects(User.self)
-                self.users = Array(users)
-            } catch {
-                print(error)
-            }
-        }
+                token = realm.objects(User.self).observe { [weak self] (changes: RealmCollectionChange) in
+                guard let self = self,
+                      let tableView = self.tableView else { return }
+
+                    self.users = Array(realm.objects(User.self))
+                if self.users.count > 0 {
+                    self.firstSymbols = (self.createFirstSimbols())
+                    self.sortFriends = (self.sortUsers())
+                    }
+
+                switch changes {
+                        case .initial, .update:
+                            tableView.reloadData()
+                        case .error(let error):
+                            fatalError("\(error)")
+                             }
+                         }
+        } catch { print(error) }
     }
+}
 
